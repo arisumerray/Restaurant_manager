@@ -3,10 +3,7 @@
 
 ### Запуск программы:
 ```
-go run ./auth/cmd/main.go
-```
-```
-go run ./order/cmd/main.go
+docker-compose up --build
 ```
 
 При логине пользователю в куки сохраняется jwt токен, 

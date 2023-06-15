@@ -7,6 +7,7 @@ networks:
 services:
   db:
     image: postgres:latest
+    network_mode: bridge
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
@@ -22,5 +23,31 @@ services:
       interval: 1s
       timeout: 2s
       retries: 5
-    networks:
-      - kpo
+  auth:
+    build: ./auth/
+    network_mode: bridge
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_URL=postgresql://root:root@db/db?sslmode=disable
+      - PORT=8080
+    restart: on-failure
+    depends_on:
+      db:
+        condition: service_healthy
+    links:
+      - db
+  order:
+    build: ./order/
+    network_mode: bridge
+    ports:
+      - "8081:8081"
+    environment:
+      - DB_URL=postgresql://root:root@db/db?sslmode=disable
+      - PORT=8081
+    restart: on-failure
+    depends_on:
+      db:
+        condition: service_healthy
+    links:
+      - db
