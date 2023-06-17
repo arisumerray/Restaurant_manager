@@ -4,14 +4,11 @@ import (
 	"auth/util"
 	"context"
 	"log"
+	"os"
 	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
-)
-
-const (
-	secretKey = "secret"
 )
 
 type service struct {
@@ -88,7 +85,7 @@ func (s *service) Login(c context.Context, req *LoginUserReq) (*LoginUserRes, er
 		},
 	})
 
-	ss, err := token.SignedString([]byte(secretKey))
+	ss, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	if err != nil {
 		return &LoginUserRes{}, err
 	}
@@ -107,7 +104,7 @@ func (s *service) Login(c context.Context, req *LoginUserReq) (*LoginUserRes, er
 func (s *service) GetClaimsFromToken(tokenString string) (*Claims, error) {
 	var claims Claims
 	token, err := jwt.ParseWithClaims(tokenString, &claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(secretKey), nil
+		return []byte("JWT_SECRET"), nil
 	})
 	if err != nil {
 		log.Print(token.Claims.(jwt.Claims))

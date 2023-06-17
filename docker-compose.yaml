@@ -31,6 +31,7 @@ services:
     environment:
       - DB_URL=postgresql://root:root@db/db?sslmode=disable
       - PORT=8080
+      - JWT-SECRET=secret
     restart: on-failure
     depends_on:
       db:
@@ -45,6 +46,7 @@ services:
     environment:
       - DB_URL=postgresql://root:root@db/db?sslmode=disable
       - PORT=8081
+      - JWT-SECRET=secret
     restart: on-failure
     depends_on:
       db:

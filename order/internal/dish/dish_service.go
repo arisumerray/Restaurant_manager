@@ -5,11 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"log"
+	"os"
 	"time"
-)
-
-const (
-	secretKey = "secret"
 )
 
 type service struct {
@@ -72,7 +69,7 @@ func (s *service) GetAll(c context.Context) ([]Dish, error) {
 func (s *service) GetClaimsFromToken(tokenString string) (*Claims, error) {
 	var claims Claims
 	token, err := jwt.ParseWithClaims(tokenString, &claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(secretKey), nil
+		return []byte(os.Getenv("JWT_SECRET")), nil
 	})
 	if err != nil {
 		log.Print(err)
